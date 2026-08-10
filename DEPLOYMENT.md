@@ -10,17 +10,17 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Họ và tên | (điền họ tên) |
-| Mã học viên | (điền mã học viên) |
-| Repo | (điền link repo K4-DAY12-...) |
+| Họ và tên | Nguyễn Phương Thủy |
+| Mã học viên | 2A202601953 |
+| Repo | https://github.com/nguyenphuongthuy2608/K4-Day12-2A202601953-NguyenPhuongThuy |
 
 ## Service
 
 | Mục | Nội dung |
 |-----|----------|
 | Public URL | https://TODO-thay-bang-url-that.up.railway.app |
-| Platform | Railway / Render / Cloud Run — (điền platform bạn dùng) |
-| Ngày deploy | (điền ngày) |
+| Platform | Render |
+| Ngày deploy | 2026-08-10 |
 
 ## Biến Môi Trường Đã Set Trên Cloud
 
