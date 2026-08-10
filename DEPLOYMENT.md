@@ -18,7 +18,7 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | https://TODO-thay-bang-url-that.up.railway.app |
+| Public URL | https://day12-chat-t3li.onrender.com |
 | Platform | Render |
 | Ngày deploy | 2026-08-10 |
 
@@ -30,7 +30,7 @@ Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 |------|--------|---------|
 | `PORT` | ✅ | platform tự gán |
 | `API_TOKEN` | ✅ | đặt trong dashboard, không nằm trong repo |
-| `REDIS_URL` | ✅ | (điền: Redis add-on của platform / Upstash / ...) |
+| `REDIS_URL` | ✅ | Render Key Value (`day12-chat-redis`) |
 | `BUCKET_CAPACITY` | ✅ | 10 |
 | `REFILL_PER_MINUTE` | ✅ | 10 |
 | `DAILY_BUDGET_USD` | ✅ | 1.0 |
@@ -38,32 +38,32 @@ Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 
 ## Lệnh Kiểm Tra
 
-Thay `<URL>` bằng Public URL ở trên:
+Các lệnh đã dùng với Public URL thật:
 
 ```bash
 # 1. Liveness — mong đợi 200 {"status":"ok"}
-curl -i <URL>/healthz
+curl -i https://day12-chat-t3li.onrender.com/healthz
 
 # 2. Readiness — mong đợi 200 {"status":"ready"} (đã nối được Redis)
-curl -i <URL>/readyz
+curl -i https://day12-chat-t3li.onrender.com/readyz
 
 # 3. Không có token — mong đợi 401 kèm header WWW-Authenticate
-curl -i -X POST <URL>/chat \
+curl -i -X POST https://day12-chat-t3li.onrender.com/chat \
   -H "Content-Type: application/json" \
   -d '{"message":"Hello"}'
 
 # 4. Có token — mong đợi 200 kèm câu trả lời
-curl -i -X POST <URL>/chat \
+curl -i -X POST https://day12-chat-t3li.onrender.com/chat \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Authorization: Bearer $DEPLOY_API_TOKEN" \
   -H "X-Client-Id: sv-test" \
   -d '{"message":"Deploy là gì?"}'
 
 # 5. Rate limit — gọi 15 lần, những lần cuối phải trả 429
 for i in $(seq 1 15); do
-  curl -s -o /dev/null -w "%{http_code} " -X POST <URL>/chat \
+  curl -s -o /dev/null -w "%{http_code} " -X POST https://day12-chat-t3li.onrender.com/chat \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $API_TOKEN" \
+    -H "Authorization: Bearer $DEPLOY_API_TOKEN" \
     -H "X-Client-Id: sv-test" \
     -d '{"message":"test"}'
 done; echo
@@ -71,10 +71,39 @@ done; echo
 
 ## Kết Quả Chạy Thật
 
-Dán output của các lệnh trên vào đây:
+Output ghi nhận lúc 16:44 ngày 2026-08-10 (giờ Việt Nam):
 
-```
-(điền output)
+```text
+$ curl -i https://day12-chat-t3li.onrender.com/healthz
+HTTP/2 200
+content-type: application/json
+
+{"status":"ok","service":"day12-chat-service","version":"1.0.0"}
+
+$ curl -i https://day12-chat-t3li.onrender.com/readyz
+HTTP/2 200
+content-type: application/json
+
+{"status":"ready","redis":true}
+
+$ curl -i -X POST https://day12-chat-t3li.onrender.com/chat \
+    -H "Content-Type: application/json" \
+    -d '{"message":"Hello"}'
+HTTP/2 401
+content-type: application/json
+www-authenticate: Bearer
+
+{"detail":"invalid or missing bearer token"}
+
+$ curl -i -X POST https://day12-chat-t3li.onrender.com/chat \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $DEPLOY_API_TOKEN" \
+    -H "X-Client-Id: deployment-doc" \
+    -d '{"message":"Deploy là gì?"}'
+HTTP/2 200
+content-type: application/json
+
+{"reply":"Câu hỏi hay. Deploy là gì thường được giải quyết bằng cách chuẩn hóa môi trường chạy: cùng một image chạy giống nhau ở laptop và trên cloud.","client_id":"deployment-doc","turns_before":0,"usd_cost":2.145e-05,"usage":{"prompt":3,"completion":35}}
 ```
 
 ## Ảnh Chụp Màn Hình
@@ -95,8 +124,5 @@ Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng
 3. Chụp màn hình vào `screenshots/`
 4. Chạy `pytest tests/test_cp5.py -v` — bộ test sẽ tự chuyển sang kiểm tra
    `http://localhost:8000`
-5. Ghi rõ lý do không deploy được vào phần dưới đây:
-
-```
-(điền lý do nếu dùng phương án dự phòng, ngược lại xóa mục này)
-```
+5. Ghi rõ lý do không deploy được. Bài này đã deploy thành công trên Render nên
+   không sử dụng phương án dự phòng.
