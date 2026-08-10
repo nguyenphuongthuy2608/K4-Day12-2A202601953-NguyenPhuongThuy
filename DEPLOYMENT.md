@@ -10,7 +10,7 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Họ và tên | Nguyễn Phương Thủy |
+| Họ và tên | Nguyễn Phương Thùy |
 | Mã học viên | 2A202601953 |
 | Repo | https://github.com/nguyenphuongthuy2608/K4-Day12-2A202601953-NguyenPhuongThuy |
 
